@@ -316,7 +316,7 @@
     },
     //
     setChartScale: function ($chart, newScale) {
-      var opts = $chart.data('options');
+      var opts = this.options;
       var lastTf = $chart.css('transform');
       var matrix = '';
       var targetScale = 1;
@@ -1373,16 +1373,20 @@
       html2canvas(sourceChart, {
         'width': flag ? sourceChart.clientHeight : sourceChart.clientWidth,
         'height': flag ? sourceChart.clientWidth : sourceChart.clientHeight,
+        'scale': 2,
         'onclone': function (cloneDoc) {
           $(cloneDoc).find('.canvasContainer').css('overflow', 'visible')
             .find('.orgchart:not(".hidden"):first').css('transform', '');
-        },
-        'onrendered': function (canvas) {
+        })
+        .then(function (canvas) {
           $chartContainer.find('.mask').addClass('hidden');
           if (exportFileextension.toLowerCase() === 'pdf') {
             var doc = {};
-            var docWidth = Math.floor(canvas.width * 0.2646);
-            var docHeight = Math.floor(canvas.height * 0.2646);
+            var docWidth = Math.floor(canvas.width * 0.7546);
+            var docHeight = Math.floor(canvas.height * 0.7546);
+            console.log("pdf size width: " + docWidth + " height: " + docHeight);
+            console.log("canvas size width: " + canvas.width + " height: " + canvas.height);
+
             if (docWidth > docHeight) {
               doc = new jsPDF('l', 'mm', [docWidth, docHeight]);
             } else {
@@ -1406,10 +1410,7 @@
               $chartContainer.find(selector).attr('href', canvas.toDataURL())[0].click();
             }
           }
-        }
-      })
-      .then(function () {
-        $chartContainer.removeClass('canvasContainer');
+          $chartContainer.removeClass('canvasContainer');
       }, function () {
         $chartContainer.removeClass('canvasContainer');
       });
