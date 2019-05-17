@@ -1377,40 +1377,40 @@
         'onclone': function (cloneDoc) {
           $(cloneDoc).find('.canvasContainer').css('overflow', 'visible')
             .find('.orgchart:not(".hidden"):first').css('transform', '');
-        })
-        .then(function (canvas) {
-          $chartContainer.find('.mask').addClass('hidden');
-          if (exportFileextension.toLowerCase() === 'pdf') {
-            var doc = {};
-            var docWidth = Math.floor(canvas.width * 0.7546);
-            var docHeight = Math.floor(canvas.height * 0.7546);
-            console.log("pdf size width: " + docWidth + " height: " + docHeight);
-            console.log("canvas size width: " + canvas.width + " height: " + canvas.height);
+        }
+      }).then(function (canvas) {
+        $chartContainer.find('.mask').addClass('hidden');
+        if (exportFileextension.toLowerCase() === 'pdf') {
+          var doc = {};
+          var docWidth = Math.floor(canvas.width * 0.7546);
+          var docHeight = Math.floor(canvas.height * 0.7546);
+          console.log("pdf size width: " + docWidth + " height: " + docHeight);
+          console.log("canvas size width: " + canvas.width + " height: " + canvas.height);
 
-            if (docWidth > docHeight) {
-              doc = new jsPDF('l', 'mm', [docWidth, docHeight]);
-            } else {
-              doc = new jsPDF('p', 'mm', [docHeight, docWidth]);
-            }
-            doc.addImage(canvas.toDataURL(), 'png', 0, 0);
-            doc.save(exportFilename + '.pdf');
+          if (docWidth > docHeight) {
+            doc = new jsPDF('l', 'mm', [docWidth, docHeight]);
           } else {
-            var isWebkit = 'WebkitAppearance' in document.documentElement.style;
-            var isFf = !!window.sidebar;
-            var isEdge = navigator.appName === 'Microsoft Internet Explorer' || (navigator.appName === "Netscape" && navigator.appVersion.indexOf('Edge') > -1);
-
-            if ((!isWebkit && !isFf) || isEdge) {
-              window.navigator.msSaveBlob(canvas.msToBlob(), exportFilename + '.png');
-            } else {
-              var selector = '.oc-download-btn' + (that.options.chartClass !== '' ? '.' + that.options.chartClass : '');
-              if (!$chartContainer.find(selector).length) {
-                $chartContainer.append('<a class="oc-download-btn' + (that.options.chartClass !== '' ? ' ' + that.options.chartClass : '') + '"'
-                  + ' download="' + exportFilename + '.png"></a>');
-              }
-              $chartContainer.find(selector).attr('href', canvas.toDataURL())[0].click();
-            }
+            doc = new jsPDF('p', 'mm', [docHeight, docWidth]);
           }
-          $chartContainer.removeClass('canvasContainer');
+          doc.addImage(canvas.toDataURL(), 'png', 0, 0);
+          doc.save(exportFilename + '.pdf');
+        } else {
+          var isWebkit = 'WebkitAppearance' in document.documentElement.style;
+          var isFf = !!window.sidebar;
+          var isEdge = navigator.appName === 'Microsoft Internet Explorer' || (navigator.appName === "Netscape" && navigator.appVersion.indexOf('Edge') > -1);
+
+          if ((!isWebkit && !isFf) || isEdge) {
+            window.navigator.msSaveBlob(canvas.msToBlob(), exportFilename + '.png');
+          } else {
+            var selector = '.oc-download-btn' + (that.options.chartClass !== '' ? '.' + that.options.chartClass : '');
+            if (!$chartContainer.find(selector).length) {
+              $chartContainer.append('<a class="oc-download-btn' + (that.options.chartClass !== '' ? ' ' + that.options.chartClass : '') + '"'
+                + ' download="' + exportFilename + '.png"></a>');
+            }
+            $chartContainer.find(selector).attr('href', canvas.toDataURL())[0].click();
+          }
+        }
+        $chartContainer.removeClass('canvasContainer');
       }, function () {
         $chartContainer.removeClass('canvasContainer');
       });
