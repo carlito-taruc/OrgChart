@@ -1022,6 +1022,12 @@
           .find('.bottomEdge').remove()
           .end().end().siblings().remove();
       }
+      // lastly, trigger node dropped event.
+      var droppedEvent = $.Event('nodedropped.orgchart');
+      this.$chart.trigger(droppedEvent, { 'draggedNode': $dragged, 'dragZone': $dragZone.children(), 'dropZone': $dropZone });
+      if (droppedEvent.isDefaultPrevented()) {
+        return;
+      }
     },
     //
     touchstartHandler: function (event) {
