@@ -1132,7 +1132,7 @@
       var level = data.level;
       if (data.children) {
         $.each(data.children, function (index, child) {
-          child.parentId = data.id;
+          child.parentId = data[opts.nodeId];
         });
       }
       // construct the content of node
